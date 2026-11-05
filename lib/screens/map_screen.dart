@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../models/island.dart';
 import '../state/forecast_notifier.dart';
 import '../state/location_notifier.dart';
+import '../widgets/island_sheet.dart';
 
 /// The nine islands on a map made of OpenStreetMap tiles.
 class MapScreen extends StatefulWidget {
@@ -67,10 +68,21 @@ class _MapScreenState extends State<MapScreen> {
 
   /// A pin with the name; a tap opens the sheet.
   Marker _marker(BuildContext context, Island island) {
-    // TODO 3: a Column with the pin and the name; a tap opens showIslandSheet
+    final theme = Theme.of(context);
     return Marker(
       point: LatLng(island.latitude, island.longitude),
-      child: const Icon(Icons.place),
+      width: 110,
+      height: 56,
+      child: GestureDetector(
+        onTap: () => showIslandSheet(context, island),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.place, size: 32, color: theme.colorScheme.primary),
+            Text(island.name, style: theme.textTheme.labelSmall),
+          ],
+        ),
+      ),
     );
   }
 
