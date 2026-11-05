@@ -98,6 +98,16 @@ class _MapScreenState extends State<MapScreen> {
 
   /// Asks for the position and moves the map there.
   Future<void> _goToMe() async {
-    // TODO 4: ask the LocationNotifier, then move the camera there
+    final location = context.read<LocationNotifier>();
+    await location.locate(context.read<ForecastNotifier>().islands);
+    if (!mounted) return; // the person may have left the screen
+    final position = location.position;
+    if (position == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(location.message)));
+      return;
+    }
+    // the red pin is already there: the screen watches the notifier
+    _controller.move(LatLng(position.latitude, position.longitude), 9);
   }
 }
