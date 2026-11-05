@@ -7,8 +7,19 @@ enum LocationStatus { ready, serviceOff, denied, deniedForever }
 class LocationService {
   /// Asks for permission, if needed, and says which answer came back.
   Future<LocationStatus> check() async {
-    // TODO 1: is the service on? Ask for permission, map the four answers.
-    return LocationStatus.denied;
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return LocationStatus.serviceOff; // off for every app, not just ours
+    }
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission(); // the dialog
+    }
+    return switch (permission) {
+      LocationPermission.whileInUse ||
+      LocationPermission.always => LocationStatus.ready,
+      LocationPermission.deniedForever => LocationStatus.deniedForever,
+      _ => LocationStatus.denied,
+    };
   }
 
   /// One position. Wi-Fi accuracy is enough: islands are kilometres apart.
