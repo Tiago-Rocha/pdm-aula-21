@@ -28,7 +28,7 @@ class LocationNotifier extends ChangeNotifier {
       if (status == LocationStatus.ready) {
         final found = await _service.position();
         position = found;
-        // TODO 2: nearest, from found and islands
+        nearest = nearestIsland(found, islands);
       }
     } on TimeoutException {
       error = 'Sem sinal. Tenta perto de uma janela.';

@@ -17,8 +17,16 @@ double distanceTo(Position position, Island island) {
 
 /// Measures the distance to every island; the shortest wins.
 Nearest nearestIsland(Position position, List<Island> islands) {
-  // TODO 2: distanceTo each island; keep the shortest
-  return (island: islands.first, metres: 0);
+  var best = islands.first;
+  var shortest = double.infinity;
+  for (final island in islands) {
+    final metres = distanceTo(position, island);
+    if (metres < shortest) {
+      shortest = metres;
+      best = island;
+    }
+  }
+  return (island: best, metres: shortest);
 }
 
 /// 850 m, 16 km.
